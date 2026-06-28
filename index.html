@@ -1827,9 +1827,9 @@ ${stepGuidance[step] || ''}
             const will = document.getElementById('grow-will-answer').value;
             this.stateManager.setSessionData('growWill', will);
             // セッション保存
-            const today = new Date().toISOString().split('T')[0];
-            const week = `${new Date().getFullYear()}-W${Math.ceil((new Date(today).getDate()) / 7)}`;
-            this.dataManager.addXP(5, 'grow_session', today);
+            const todayDate = new Date().toISOString().split('T')[0];
+            const week = `${new Date().getFullYear()}-W${Math.ceil((new Date(todayDate).getDate()) / 7)}`;
+            this.dataManager.addXP(5, 'grow_session', todayDate);
             this.stateManager.setState(STATES.GROW_SUMMARY);
             this.render(STATES.GROW_SUMMARY);
             break;
