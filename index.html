@@ -1,0 +1,1716 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ヴィタリア - 異世界転生習慣冒険</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      min-height: 100vh;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #e0e0e0;
+    }
+
+    #app {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .screen {
+      background: linear-gradient(135deg, rgba(26, 26, 46, 0.8) 0%, rgba(22, 33, 62, 0.8) 100%);
+      border: 1px solid rgba(102, 126, 234, 0.3);
+      border-radius: 15px;
+      padding: 2rem;
+      max-width: 520px;
+      width: 100%;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(102, 126, 234, 0.1);
+    }
+
+    h1 {
+      color: #a8edea;
+      font-size: 1.75rem;
+      margin-bottom: 0.5rem;
+      text-align: center;
+      text-shadow: 0 2px 10px rgba(168, 237, 234, 0.3);
+    }
+
+    .subtitle {
+      color: #999;
+      text-align: center;
+      margin-bottom: 1.5rem;
+      font-size: 0.9rem;
+    }
+
+    .luna-avatar {
+      width: 140px;
+      height: 140px;
+      margin: 0 auto 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 80px;
+      background: linear-gradient(135deg, rgba(168, 237, 234, 0.1) 0%, rgba(254, 214, 227, 0.1) 100%);
+      border: 2px solid rgba(102, 126, 234, 0.5);
+      border-radius: 50%;
+      box-shadow: 0 0 30px rgba(102, 126, 234, 0.3), inset 0 0 20px rgba(168, 237, 234, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .luna-avatar.level-2 {
+      box-shadow: 0 0 40px rgba(102, 126, 234, 0.5), inset 0 0 30px rgba(168, 237, 234, 0.2);
+    }
+
+    .luna-avatar.level-3 {
+      box-shadow: 0 0 50px rgba(255, 215, 0, 0.4), inset 0 0 40px rgba(255, 215, 0, 0.15);
+    }
+
+    .luna-avatar.level-4 {
+      box-shadow: 0 0 60px rgba(255, 215, 0, 0.6), inset 0 0 50px rgba(255, 215, 0, 0.25);
+    }
+
+    .luna-avatar.level-5 {
+      box-shadow: 0 0 70px rgba(255, 105, 180, 0.5), inset 0 0 60px rgba(255, 105, 180, 0.2);
+    }
+
+    .luna-avatar.level-6 {
+      box-shadow: 0 0 80px rgba(255, 105, 180, 0.7), inset 0 0 70px rgba(255, 105, 180, 0.3);
+    }
+
+    .luna-avatar.level-7 {
+      box-shadow: 0 0 90px rgba(255, 215, 0, 0.8), inset 0 0 80px rgba(255, 215, 0, 0.3);
+    }
+
+    .luna-avatar.level-8 {
+      box-shadow: 0 0 100px rgba(168, 237, 234, 0.9), inset 0 0 90px rgba(168, 237, 234, 0.4);
+    }
+
+    .stat-bar {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(102, 126, 234, 0.3);
+      border-radius: 8px;
+      padding: 1rem;
+      margin: 1rem 0;
+      text-align: center;
+    }
+
+    .stat-label {
+      color: #a8edea;
+      font-size: 0.85rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #fff;
+    }
+
+    .stat-secondary {
+      color: #999;
+      font-size: 0.8rem;
+      margin-top: 0.25rem;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 1rem;
+      border-radius: 8px;
+      border: 1px solid rgba(102, 126, 234, 0.5);
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      width: 100%;
+      margin-top: 0.75rem;
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+      box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      color: #a8edea;
+      padding: 0.875rem;
+      border-radius: 8px;
+      border: 1px solid rgba(168, 237, 234, 0.3);
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      width: 100%;
+      margin-top: 0.5rem;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(168, 237, 234, 0.1);
+      border-color: rgba(168, 237, 234, 0.6);
+    }
+
+    .quest-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+
+    .quest-card {
+      background: rgba(0, 0, 0, 0.2);
+      border: 2px solid rgba(102, 126, 234, 0.3);
+      border-radius: 10px;
+      padding: 1rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: center;
+    }
+
+    .quest-card:hover {
+      border-color: rgba(168, 237, 234, 0.6);
+      background: rgba(102, 126, 234, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .quest-card.selected {
+      border-color: #a8edea;
+      background: rgba(168, 237, 234, 0.2);
+      box-shadow: 0 0 20px rgba(168, 237, 234, 0.3);
+    }
+
+    .quest-icon {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .quest-label {
+      color: #a8edea;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .quest-count {
+      color: #666;
+      font-size: 0.75rem;
+      margin-top: 0.25rem;
+    }
+
+    .mood-selector {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+
+    .mood-btn {
+      background: rgba(0, 0, 0, 0.2);
+      border: 2px solid rgba(102, 126, 234, 0.3);
+      border-radius: 10px;
+      padding: 1rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: center;
+    }
+
+    .mood-btn:hover {
+      border-color: rgba(168, 237, 234, 0.6);
+      background: rgba(102, 126, 234, 0.1);
+    }
+
+    .mood-btn.selected {
+      border-color: #a8edea;
+      background: rgba(168, 237, 234, 0.2);
+      box-shadow: 0 0 20px rgba(168, 237, 234, 0.3);
+    }
+
+    .mood-emoji {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .mood-label {
+      color: #a8edea;
+      font-size: 0.8rem;
+    }
+
+    .luna-comment {
+      background: rgba(102, 126, 234, 0.1);
+      border-left: 3px solid #a8edea;
+      padding: 1.25rem;
+      border-radius: 5px;
+      margin: 1.5rem 0;
+      color: #c0c0c0;
+      line-height: 1.6;
+      font-style: italic;
+    }
+
+    .loading-text {
+      color: #666;
+      font-size: 0.9rem;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 0.4rem;
+      margin: 1.5rem 0;
+    }
+
+    .calendar-day {
+      aspect-ratio: 1;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 600;
+      border: 1px solid rgba(102, 126, 234, 0.2);
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    .calendar-day.completed {
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.4) 0%, rgba(168, 237, 234, 0.2) 100%);
+      border-color: #a8edea;
+      color: #a8edea;
+    }
+
+    .calendar-day.today {
+      border: 2px solid #a8edea;
+      box-shadow: 0 0 10px rgba(168, 237, 234, 0.3);
+    }
+
+    .xp-bar {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(102, 126, 234, 0.3);
+      border-radius: 8px;
+      height: 8px;
+      overflow: hidden;
+      margin: 0.5rem 0 0.75rem;
+    }
+
+    .xp-fill {
+      background: linear-gradient(90deg, #667eea 0%, #a8edea 100%);
+      height: 100%;
+      transition: width 0.3s ease;
+      box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
+    }
+
+    .textarea-input {
+      width: 100%;
+      padding: 1rem;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(102, 126, 234, 0.3);
+      border-radius: 8px;
+      color: #e0e0e0;
+      font-size: 0.95rem;
+      resize: vertical;
+      min-height: 120px;
+      font-family: inherit;
+      transition: all 0.2s ease;
+    }
+
+    .textarea-input:focus {
+      outline: none;
+      border-color: #a8edea;
+      background: rgba(102, 126, 234, 0.1);
+      box-shadow: 0 0 15px rgba(102, 126, 234, 0.2);
+    }
+
+    .checkbox-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin: 1rem 0;
+    }
+
+    .checkbox-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(102, 126, 234, 0.2);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .checkbox-item:hover {
+      border-color: rgba(168, 237, 234, 0.4);
+      background: rgba(102, 126, 234, 0.05);
+    }
+
+    .checkbox-item input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+      accent-color: #a8edea;
+    }
+
+    .checkbox-item label {
+      cursor: pointer;
+      flex: 1;
+      color: #c0c0c0;
+    }
+
+    .progress-section {
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(102, 126, 234, 0.2);
+      border-radius: 10px;
+      padding: 1rem;
+      margin: 1rem 0;
+    }
+
+    .progress-section-title {
+      color: #a8edea;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .stamp-container {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+
+    .stamp {
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      border-radius: 8px;
+      border: 2px solid rgba(102, 126, 234, 0.3);
+      background: rgba(102, 126, 234, 0.1);
+      box-shadow: 0 0 10px rgba(102, 126, 234, 0.2);
+    }
+
+    .stamp.locked {
+      opacity: 0.3;
+      filter: grayscale(100%);
+    }
+
+    @media (max-width: 640px) {
+      .screen {
+        padding: 1.5rem;
+      }
+
+      h1 {
+        font-size: 1.5rem;
+      }
+
+      .quest-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .quest-icon {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+
+  <script>
+    // ============================================
+    // CONFIG & CONSTANTS
+    // ============================================
+
+    const CONFIG = {
+      GEMINI_API_KEY: localStorage.getItem('vitalia_gemini_key') || '', // localStorage から読み込み
+      STORAGE_KEYS: {
+        USER: 'vitalia_user',
+        DAILY_LOGS: 'vitalia_daily_logs',
+        WEEKLY_SESSIONS: 'vitalia_weekly_sessions',
+        MENU_STATS: 'vitalia_menu_stats',
+        STREAKS: 'vitalia_streaks',
+        XP: 'vitalia_xp',
+        STAMPS: 'vitalia_stamps',
+        CURRENT_STATE: 'vitalia_current_state',
+        SESSION_DATA: 'vitalia_session_data',
+      },
+    };
+
+    const STATES = {
+      WELCOME: 'welcome',
+      SETTINGS: 'settings',
+      DAILY_MOOD: 'daily_mood',
+      DAILY_QUESTS: 'daily_quests',
+      DAILY_COMMENT: 'daily_comment',
+      DAILY_DONE: 'daily_done',
+      DASHBOARD: 'dashboard',
+      INTERVIEW_START: 'interview_start',
+      INTERVIEW_Q1: 'interview_q1',
+      INTERVIEW_Q2_1: 'interview_q2_1',
+      INTERVIEW_Q2_2: 'interview_q2_2',
+      INTERVIEW_Q2_3: 'interview_q2_3',
+      INTERVIEW_Q2_5: 'interview_q2_5',
+      INTERVIEW_Q3: 'interview_q3',
+      INTERVIEW_Q7_1: 'interview_q7_1',
+      GROW_GOAL: 'grow_goal',
+      GROW_REALITY: 'grow_reality',
+      GROW_OPTIONS: 'grow_options',
+      GROW_WILL: 'grow_will',
+      GROW_SUMMARY: 'grow_summary',
+    };
+
+    const EXERCISE_MENUS = [
+      { id: 'walk', label: '散歩', icon: '🚶' },
+      { id: 'radio', label: 'ラジオ体操', icon: '📻' },
+      { id: 'stretch', label: 'ストレッチ', icon: '🧘' },
+      { id: 'muscle', label: '筋トレ', icon: '💪' },
+      { id: 'swim', label: '水泳', icon: '🏊' },
+      { id: 'bike', label: '自転車', icon: '🚲' },
+      { id: 'yoga', label: 'ヨガ', icon: '🧘' },
+      { id: 'run', label: 'ランニング', icon: '🏃' },
+      { id: 'other_ex', label: 'その他', icon: '⚡' },
+    ];
+
+    const FOOD_MENUS = [
+      { id: 'balance', label: 'バランス良い食事', icon: '🥗' },
+      { id: 'vege', label: '野菜たっぷり', icon: '🥦' },
+      { id: 'protein', label: 'タンパク質', icon: '🥩' },
+      { id: 'water', label: '水分補給', icon: '💧' },
+      { id: 'no_junk', label: '間食を控えた', icon: '🚫' },
+      { id: 'breakfast', label: '朝食', icon: '🍳' },
+      { id: 'light_dinner', label: '軽めの夜食', icon: '🌙' },
+      { id: 'other_food', label: 'その他', icon: '🍽️' },
+    ];
+
+    const LEVEL_THRESHOLDS = [
+      { level: 1, xp: 0, name: '芽生え', emoji: '🌙' },
+      { level: 2, xp: 15, name: '根を張る', emoji: '🌙' },
+      { level: 3, xp: 40, name: '葉が出る', emoji: '⭐' },
+      { level: 4, xp: 80, name: '若木', emoji: '🌟' },
+      { level: 5, xp: 150, name: '花が咲く', emoji: '💫' },
+      { level: 6, xp: 250, name: '満開', emoji: '🌸' },
+      { level: 7, xp: 400, name: '大樹', emoji: '👑' },
+      { level: 8, xp: 600, name: '守護者', emoji: '✨' },
+    ];
+
+    const DEFAULT_FALLBACK_COMMENTS = [
+      'よく頑張ったね。明日も応援している。',
+      'あなたの修行の道、正しく進んでいる。',
+      '習慣という技能、少しずつ習得している。',
+      '毎日の積み重ねが力になる。',
+      '冒険は続く。前に進もう。',
+    ];
+
+    // ============================================
+    // STATE MANAGEMENT
+    // ============================================
+
+    class StateManager {
+      constructor() {
+        this.currentState = localStorage.getItem(CONFIG.STORAGE_KEYS.CURRENT_STATE) || STATES.WELCOME;
+        this.sessionData = JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEYS.SESSION_DATA) || '{}');
+      }
+
+      setState(newState) {
+        this.currentState = newState;
+        localStorage.setItem(CONFIG.STORAGE_KEYS.CURRENT_STATE, newState);
+      }
+
+      getState() {
+        return this.currentState;
+      }
+
+      setSessionData(key, value) {
+        this.sessionData[key] = value;
+        localStorage.setItem(CONFIG.STORAGE_KEYS.SESSION_DATA, JSON.stringify(this.sessionData));
+      }
+
+      getSessionData(key) {
+        return this.sessionData[key];
+      }
+
+      clearSessionData() {
+        this.sessionData = {};
+        localStorage.removeItem(CONFIG.STORAGE_KEYS.SESSION_DATA);
+      }
+    }
+
+    // ============================================
+    // DATA MANAGER
+    // ============================================
+
+    class DataManager {
+      constructor() {
+        this.ensureDataExists();
+      }
+
+      ensureDataExists() {
+        const keys = Object.values(CONFIG.STORAGE_KEYS);
+
+        if (!localStorage.getItem(CONFIG.STORAGE_KEYS.USER)) {
+          localStorage.setItem(CONFIG.STORAGE_KEYS.USER, JSON.stringify({
+            id: this.generateUUID(),
+            name: '',
+            createdAt: new Date().toISOString(),
+          }));
+        }
+
+        if (!localStorage.getItem(CONFIG.STORAGE_KEYS.DAILY_LOGS)) {
+          localStorage.setItem(CONFIG.STORAGE_KEYS.DAILY_LOGS, JSON.stringify([]));
+        }
+
+        if (!localStorage.getItem(CONFIG.STORAGE_KEYS.MENU_STATS)) {
+          localStorage.setItem(CONFIG.STORAGE_KEYS.MENU_STATS, JSON.stringify({
+            exercise: {},
+            food: {},
+          }));
+        }
+
+        if (!localStorage.getItem(CONFIG.STORAGE_KEYS.STREAKS)) {
+          localStorage.setItem(CONFIG.STORAGE_KEYS.STREAKS, JSON.stringify({
+            current: 0,
+            best: 0,
+            lastDate: null,
+          }));
+        }
+
+        if (!localStorage.getItem(CONFIG.STORAGE_KEYS.XP)) {
+          localStorage.setItem(CONFIG.STORAGE_KEYS.XP, JSON.stringify({
+            total: 0,
+            level: 1,
+            nextLevelAt: 15,
+            history: [],
+          }));
+        }
+
+        if (!localStorage.getItem(CONFIG.STORAGE_KEYS.STAMPS)) {
+          localStorage.setItem(CONFIG.STORAGE_KEYS.STAMPS, JSON.stringify([]));
+        }
+      }
+
+      generateUUID() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+          const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+          return v.toString(16);
+        });
+      }
+
+      // ユーザー
+      getUser() {
+        return JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEYS.USER));
+      }
+
+      // 日次ログ
+      getDailyLogs() {
+        return JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEYS.DAILY_LOGS));
+      }
+
+      saveDailyLog(date, mood, exercises, foods, lunaComment) {
+        const logs = this.getDailyLogs();
+        logs.push({
+          date,
+          mood,
+          exercises,
+          foods,
+          lunaComment,
+          timestamp: new Date().toISOString(),
+        });
+        localStorage.setItem(CONFIG.STORAGE_KEYS.DAILY_LOGS, JSON.stringify(logs));
+
+        // メニュー統計更新
+        this.updateMenuStats(exercises, foods, date);
+
+        // ストリーク更新
+        this.updateStreak(date);
+
+        // XP追加
+        this.addXP(1, 'checkin', date);
+
+        // ストリークボーナス
+        const streaks = this.getStreaks();
+        if (streaks.current === 3) this.addXP(2, 'streak_3', date);
+        if (streaks.current === 7) this.addXP(5, 'streak_7', date);
+        if (streaks.current === 14) this.addXP(10, 'streak_14', date);
+
+        // 両方選択ボーナス
+        if (exercises.length > 0 && foods.length > 0) {
+          this.addXP(1, 'both_categories', date);
+        }
+
+        this.checkStamps();
+      }
+
+      getTodayLog() {
+        const logs = this.getDailyLogs();
+        const today = new Date().toISOString().split('T')[0];
+        return logs.find(log => log.date === today);
+      }
+
+      // メニュー統計
+      getMenuStats() {
+        return JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEYS.MENU_STATS));
+      }
+
+      updateMenuStats(exercises, foods, date) {
+        const stats = this.getMenuStats();
+
+        exercises.forEach(exId => {
+          if (!stats.exercise[exId]) {
+            stats.exercise[exId] = { count: 0, lastDate: null, weekPattern: [0,0,0,0,0,0,0] };
+          }
+          stats.exercise[exId].count++;
+          stats.exercise[exId].lastDate = date;
+          const dayOfWeek = new Date(date).getDay();
+          stats.exercise[exId].weekPattern[dayOfWeek]++;
+        });
+
+        foods.forEach(foodId => {
+          if (!stats.food[foodId]) {
+            stats.food[foodId] = { count: 0, lastDate: null, weekPattern: [0,0,0,0,0,0,0] };
+          }
+          stats.food[foodId].count++;
+          stats.food[foodId].lastDate = date;
+          const dayOfWeek = new Date(date).getDay();
+          stats.food[foodId].weekPattern[dayOfWeek]++;
+        });
+
+        localStorage.setItem(CONFIG.STORAGE_KEYS.MENU_STATS, JSON.stringify(stats));
+      }
+
+      getSortedMenus(category) {
+        const stats = this.getMenuStats();
+        const menus = category === 'exercise' ? EXERCISE_MENUS : FOOD_MENUS;
+        const categoryStats = category === 'exercise' ? stats.exercise : stats.food;
+        const today = new Date().getDay();
+
+        return menus.sort((a, b) => {
+          const scoreA = this.computeMenuScore(categoryStats[a.id], today);
+          const scoreB = this.computeMenuScore(categoryStats[b.id], today);
+          return scoreB - scoreA;
+        });
+      }
+
+      computeMenuScore(stat, dayOfWeek) {
+        if (!stat) return 0;
+        const recency = stat.lastDate ? Math.floor((Date.now() - new Date(stat.lastDate).getTime()) / (1000 * 60 * 60 * 24)) : 999;
+        const dayBonus = (stat.weekPattern[dayOfWeek] || 0) * 5;
+        return (stat.count * 2) - (recency * 0.5) + dayBonus;
+      }
+
+      // ストリーク
+      getStreaks() {
+        return JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEYS.STREAKS));
+      }
+
+      updateStreak(date) {
+        const streaks = this.getStreaks();
+        const today = date || new Date().toISOString().split('T')[0];
+        const yesterday = new Date(new Date().setDate(new Date().getDate() - 1)).toISOString().split('T')[0];
+
+        if (streaks.lastDate === today) {
+          return; // 既に今日は記録済み
+        }
+
+        if (streaks.lastDate === yesterday) {
+          streaks.current++;
+        } else if (streaks.lastDate !== today) {
+          streaks.current = 1;
+        }
+
+        streaks.best = Math.max(streaks.best, streaks.current);
+        streaks.lastDate = today;
+
+        localStorage.setItem(CONFIG.STORAGE_KEYS.STREAKS, JSON.stringify(streaks));
+      }
+
+      // XP & レベル
+      getXP() {
+        return JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEYS.XP));
+      }
+
+      addXP(amount, reason, date) {
+        const xpData = this.getXP();
+        xpData.total += amount;
+        xpData.history.push({
+          date: date || new Date().toISOString().split('T')[0],
+          gained: amount,
+          reason,
+        });
+
+        // レベルアップチェック
+        const nextThreshold = LEVEL_THRESHOLDS.find(t => t.level === xpData.level + 1);
+        if (nextThreshold && xpData.total >= nextThreshold.xp) {
+          xpData.level++;
+          if (nextThreshold.level < LEVEL_THRESHOLDS.length) {
+            xpData.nextLevelAt = LEVEL_THRESHOLDS[nextThreshold.level].xp;
+          }
+          this.addStamp(`level_${xpData.level}`);
+        }
+
+        localStorage.setItem(CONFIG.STORAGE_KEYS.XP, JSON.stringify(xpData));
+      }
+
+      getCurrentLevel() {
+        const xp = this.getXP();
+        return LEVEL_THRESHOLDS.find(t => t.level === xp.level) || LEVEL_THRESHOLDS[0];
+      }
+
+      // スタンプ
+      getStamps() {
+        return JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEYS.STAMPS));
+      }
+
+      addStamp(stampId) {
+        const stamps = this.getStamps();
+        if (!stamps.includes(stampId)) {
+          stamps.push(stampId);
+          localStorage.setItem(CONFIG.STORAGE_KEYS.STAMPS, JSON.stringify(stamps));
+        }
+      }
+
+      checkStamps() {
+        const stamps = this.getStamps();
+        const logs = this.getDailyLogs();
+        const xp = this.getXP();
+
+        if (logs.length === 1) {
+          this.addStamp('first_checkin');
+        }
+      }
+    }
+
+    // ============================================
+    // GEMINI API
+    // ============================================
+
+    class GeminiAPI {
+      constructor(apiKey) {
+        this.apiKey = apiKey;
+        this.baseURL = '/api/generateComment';
+      }
+
+      async generateComment(prompt) {
+        try {
+          const response = await fetch(this.baseURL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ prompt }),
+          });
+
+          if (!response.ok) throw new Error(`API error: ${response.status}`);
+
+          const data = await response.json();
+          return data.comment || DEFAULT_FALLBACK_COMMENTS[0];
+        } catch (error) {
+          console.error('Gemini API error:', error);
+          return DEFAULT_FALLBACK_COMMENTS[Math.floor(Math.random() * DEFAULT_FALLBACK_COMMENTS.length)];
+        }
+      }
+
+      async getGreeting(streak, level) {
+        const prompt = `あなたはルナ、異世界で冒険者を導くAI。
+ユーザーの修行ストリーク: ${streak}日継続
+現在の段階: Lv${level}
+
+温かく、冒険者を励ます1～2文の挨拶を生成してください。
+短く、力強く、希望に満ちた言葉をお願いします。`;
+        return this.generateComment(prompt);
+      }
+
+      async getCoachingComment(mood, exerciseCount, foodCount, streak) {
+        const prompt = `あなたはルナ、冒険者の修行を支援するコーチ。
+体調: ${mood === 'good' ? '良好' : mood === 'normal' ? '普通' : 'つらい'}
+実施した修行: 運動${exerciseCount}種、食事${foodCount}種
+ストリーク: ${streak}日
+
+温かく、この冒険者の頑張りを認め、励ます1～2文のコメントをください。`;
+        return this.generateComment(prompt);
+      }
+    }
+
+    // ============================================
+    // UI RENDERER
+    // ============================================
+
+    class UIRenderer {
+      constructor(stateManager, dataManager, geminiAPI) {
+        this.stateManager = stateManager;
+        this.dataManager = dataManager;
+        this.geminiAPI = geminiAPI;
+        this.appContainer = document.getElementById('app');
+      }
+
+      render(state) {
+        const html = this.getHTML(state);
+        this.appContainer.innerHTML = html;
+        this.attachEventListeners(state);
+      }
+
+      getHTML(state) {
+        switch (state) {
+          case STATES.WELCOME:
+            return this.renderWelcome();
+          case STATES.SETTINGS:
+            return this.renderSettings();
+          case STATES.DAILY_MOOD:
+            return this.renderDailyMood();
+          case STATES.DAILY_QUESTS:
+            return this.renderDailyQuests();
+          case STATES.DAILY_COMMENT:
+            return this.renderDailyComment();
+          case STATES.DAILY_DONE:
+            return this.renderDailyDone();
+          case STATES.DASHBOARD:
+            return this.renderDashboard();
+          case STATES.INTERVIEW_START:
+            return this.renderInterviewStart();
+          case STATES.INTERVIEW_Q1:
+            return this.renderInterviewQ1();
+          case STATES.INTERVIEW_Q2_1:
+            return this.renderInterviewQ2_1();
+          case STATES.INTERVIEW_Q2_2:
+            return this.renderInterviewQ2_2();
+          case STATES.INTERVIEW_Q2_3:
+            return this.renderInterviewQ2_3();
+          case STATES.INTERVIEW_Q2_5:
+            return this.renderInterviewQ2_5();
+          case STATES.INTERVIEW_Q3:
+            return this.renderInterviewQ3();
+          case STATES.INTERVIEW_Q7_1:
+            return this.renderInterviewQ7_1();
+          case STATES.GROW_GOAL:
+            return this.renderGrowGoal();
+          case STATES.GROW_REALITY:
+            return this.renderGrowReality();
+          case STATES.GROW_OPTIONS:
+            return this.renderGrowOptions();
+          case STATES.GROW_WILL:
+            return this.renderGrowWill();
+          case STATES.GROW_SUMMARY:
+            return this.renderGrowSummary();
+          default:
+            return this.renderWelcome();
+        }
+      }
+
+      renderWelcome() {
+        const xp = this.dataManager.getXP();
+        const currentLevel = this.dataManager.getCurrentLevel();
+        const streaks = this.dataManager.getStreaks();
+        const todayLog = this.dataManager.getTodayLog();
+
+        return `
+          <div class="screen">
+            <div class="luna-avatar level-${xp.level}">
+              ${currentLevel.emoji}
+            </div>
+            <h1>ヴィタリア</h1>
+            <p class="subtitle">異世界習慣冒険</p>
+
+            <div class="luna-comment" id="greeting-message" style="margin: 1.5rem 0; min-height: 60px; display: flex; align-items: center; justify-content: center;">
+              <span class="loading-text">ルナからのメッセージを受け取り中...</span>
+            </div>
+
+            <div class="stat-bar">
+              <div class="stat-label">冒険者の段階</div>
+              <div class="stat-value">${currentLevel.name} Lv${xp.level}</div>
+              <div class="xp-bar">
+                <div class="xp-fill" style="width: ${(xp.total / xp.nextLevelAt) * 100}%"></div>
+              </div>
+              <div class="stat-secondary">${xp.total} / ${xp.nextLevelAt} 修行ポイント</div>
+            </div>
+
+            <div class="stat-bar">
+              <div class="stat-label">修行の連続</div>
+              <div class="stat-value">🔥 ${streaks.current} 日</div>
+              <div class="stat-secondary">最高記録: ${streaks.best} 日</div>
+            </div>
+
+            ${todayLog ? `
+              <p style="text-align: center; color: #999; font-size: 0.85rem; margin: 1rem 0;">
+                本日の修行は完了しました
+              </p>
+            ` : `
+              <button class="btn-primary" data-action="start-daily">
+                🗡️ 本日の修行を始める
+              </button>
+            `}
+
+            <button class="btn-secondary" data-action="view-dashboard">
+              📊 冒険の記録
+            </button>
+            <button class="btn-secondary" data-action="start-interview">
+              💬 深い会話
+            </button>
+            <button class="btn-secondary" data-action="open-settings">
+              ⚙️ 設定
+            </button>
+          </div>
+        `;
+      }
+
+      renderSettings() {
+        return `
+          <div class="screen">
+            <h1>設定</h1>
+            <p class="subtitle">ヴィタリアの情報</p>
+
+            <div class="progress-section">
+              <div class="progress-section-title">🤖 ルナについて</div>
+              <p style="color: #999; font-size: 0.85rem; margin: 0.5rem 0;">
+                ルナはあなたの修行をサポートするAIコンパニオンです。
+              </p>
+              <p style="color: #a8edea; font-size: 0.8rem; margin: 1rem 0;">
+                ✅ ルナのコーチング機能は有効です
+              </p>
+              <p style="color: #666; font-size: 0.75rem;">
+                • 毎日の挨拶メッセージ生成<br>
+                • チェックイン後のコーチングコメント<br>
+                • あなたの修行に合わせた返答
+              </p>
+            </div>
+
+            <div class="progress-section">
+              <div class="progress-section-title">📱 アプリ情報</div>
+              <p style="color: #999; font-size: 0.85rem;">
+                <strong>ヴィタリア v2</strong><br>
+                スマートな異世界転生習慣冒険<br><br>
+                <strong>機能:</strong><br>
+                • 日次メニュー選択 & ルナのコーチング<br>
+                • パターン学習メニュー<br>
+                • XP・レベルシステム（Lv1-8）<br>
+                • インタビュー & GROWセッション<br>
+                • 進捗ダッシュボード
+              </p>
+            </div>
+
+            <div class="progress-section">
+              <div class="progress-section-title">🔧 データ管理</div>
+              <button class="btn-secondary" data-action="clear-data" style="background: rgba(255, 100, 100, 0.1); border-color: rgba(255, 100, 100, 0.3); color: #ff6464;">
+                🗑️ すべてのデータを削除
+              </button>
+            </div>
+
+            <button class="btn-primary" data-action="back-welcome">
+              🏠 ホームへ
+            </button>
+          </div>
+        `;
+      }
+
+      renderDailyMood() {
+        return `
+          <div class="screen">
+            <h1>今日の調子は？</h1>
+            <p class="subtitle">修行を始める前に</p>
+
+            <div class="mood-selector">
+              <button class="mood-btn" data-action="mood-good">
+                <div class="mood-emoji">😊</div>
+                <div class="mood-label">良好</div>
+              </button>
+              <button class="mood-btn" data-action="mood-normal">
+                <div class="mood-emoji">😐</div>
+                <div class="mood-label">普通</div>
+              </button>
+              <button class="mood-btn" data-action="mood-hard">
+                <div class="mood-emoji">😞</div>
+                <div class="mood-label">つらい</div>
+              </button>
+            </div>
+          </div>
+        `;
+      }
+
+      renderDailyQuests() {
+        const sortedExercises = this.dataManager.getSortedMenus('exercise');
+        const sortedFoods = this.dataManager.getSortedMenus('food');
+
+        return `
+          <div class="screen">
+            <h1>修行クエスト</h1>
+            <p class="subtitle">本日の鍛錬を選択</p>
+
+            <div class="progress-section">
+              <div class="progress-section-title">🏃 運動の修行</div>
+              <div class="quest-grid">
+                ${sortedExercises.map(ex => `
+                  <button class="quest-card" data-action="toggle-exercise" data-id="${ex.id}">
+                    <div class="quest-icon">${ex.icon}</div>
+                    <div class="quest-label">${ex.label}</div>
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+
+            <div class="progress-section">
+              <div class="progress-section-title">🍎 食事の修行</div>
+              <div class="quest-grid">
+                ${sortedFoods.map(food => `
+                  <button class="quest-card" data-action="toggle-food" data-id="${food.id}">
+                    <div class="quest-icon">${food.icon}</div>
+                    <div class="quest-label">${food.label}</div>
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+
+            <button class="btn-primary" data-action="record-quests">
+              ✅ 修行を記録する
+            </button>
+            <button class="btn-secondary" data-action="back-welcome">
+              戻る
+            </button>
+          </div>
+        `;
+      }
+
+      renderDailyComment() {
+        return `
+          <div class="screen">
+            <div class="luna-avatar">🌙</div>
+            <h1>修行の成果</h1>
+            <p class="subtitle">ルナからのメッセージ</p>
+
+            <div class="luna-comment" id="luna-comment">
+              <span class="loading-text">ルナの言葉を待機中...</span>
+            </div>
+
+            <button class="btn-primary" data-action="finish-daily">
+              🏠 ホームへ帰還
+            </button>
+          </div>
+        `;
+      }
+
+      renderDailyDone() {
+        return `
+          <div class="screen">
+            <div class="luna-avatar level-8">✨</div>
+            <h1>修行完了</h1>
+            <p class="subtitle">素晴らしい頑張り</p>
+
+            <p style="text-align: center; color: #a8edea; margin: 1.5rem 0; line-height: 1.6;">
+              今日の修行も記録されました。<br>
+              明日も一緒に頑張ろう。
+            </p>
+
+            <button class="btn-primary" data-action="back-welcome">
+              🏠 ホームへ帰還
+            </button>
+          </div>
+        `;
+      }
+
+      renderDashboard() {
+        const logs = this.dataManager.getDailyLogs();
+        const xp = this.dataManager.getXP();
+        const currentLevel = this.dataManager.getCurrentLevel();
+        const stamps = this.dataManager.getStamps();
+        const streaks = this.dataManager.getStreaks();
+
+        // カレンダー生成
+        const today = new Date();
+        const month = today.getMonth();
+        const year = today.getFullYear();
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+        const daysInMonth = lastDay.getDate();
+        const startingDayOfWeek = firstDay.getDay();
+
+        let calendarHTML = '';
+        for (let i = 0; i < startingDayOfWeek; i++) {
+          calendarHTML += '<div class="calendar-day"></div>';
+        }
+
+        for (let day = 1; day <= daysInMonth; day++) {
+          const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+          const hasLog = logs.some(l => l.date === dateStr);
+          const isToday = dateStr === new Date().toISOString().split('T')[0];
+          let classes = 'calendar-day';
+          if (hasLog) classes += ' completed';
+          if (isToday) classes += ' today';
+          calendarHTML += `<div class="${classes}">${day}</div>`;
+        }
+
+        return `
+          <div class="screen">
+            <h1>冒険の記録</h1>
+            <p class="subtitle">修行の成果を見る</p>
+
+            <div class="stat-bar">
+              <div class="stat-label">現在の段階</div>
+              <div class="stat-value">${currentLevel.name} Lv${xp.level}</div>
+              <div class="xp-bar">
+                <div class="xp-fill" style="width: ${(xp.total / xp.nextLevelAt) * 100}%"></div>
+              </div>
+              <div class="stat-secondary">${xp.total} / ${xp.nextLevelAt} 修行ポイント</div>
+            </div>
+
+            <div class="stat-bar">
+              <div class="stat-label">修行の連続</div>
+              <div class="stat-value">🔥 ${streaks.current} 日</div>
+              <div class="stat-secondary">最高記録: ${streaks.best} 日</div>
+            </div>
+
+            <div class="progress-section">
+              <div class="progress-section-title">修行日誌</div>
+              <div class="calendar-grid">
+                ${calendarHTML}
+              </div>
+            </div>
+
+            <div class="progress-section">
+              <div class="progress-section-title">獲得した徽章</div>
+              <div class="stamp-container">
+                ${LEVEL_THRESHOLDS.map(level => {
+                  const hasStamp = stamps.includes(`level_${level.level}`);
+                  return `<div class="stamp ${!hasStamp ? 'locked' : ''}">${level.emoji}</div>`;
+                }).join('')}
+              </div>
+            </div>
+
+            <button class="btn-secondary" data-action="back-welcome">
+              戻る
+            </button>
+          </div>
+        `;
+      }
+
+      // ============ インタビューフロー ============
+
+      renderInterviewStart() {
+        return `
+          <div class="screen">
+            <div class="luna-avatar">💬</div>
+            <h1>深い会話</h1>
+            <p class="subtitle">あなたの心と体を知る</p>
+
+            <p style="color: #c0c0c0; margin: 1.5rem 0; line-height: 1.6;">
+              困っていることや不安、健康についてお話しください。
+              ルナがあなたを理解し、修行の道を案内します。
+            </p>
+
+            <button class="btn-primary" data-action="start-interview-flow">
+              ➡️ 話を聞かせて
+            </button>
+            <button class="btn-secondary" data-action="back-welcome">
+              戻る
+            </button>
+          </div>
+        `;
+      }
+
+      renderInterviewQ1() {
+        return `
+          <div class="screen">
+            <h1>今の状態</h1>
+            <p class="subtitle">問1 / 困り事について</p>
+
+            <p style="color: #c0c0c0; margin: 1.5rem 0;">
+              今、何か困っていることはありますか？
+            </p>
+
+            <div style="display: grid; gap: 1rem;">
+              <button class="mood-btn" data-action="q1-yes" style="padding: 1rem;">
+                <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">😟</div>
+                <div class="quest-label">あります</div>
+              </button>
+              <button class="mood-btn" data-action="q1-no" style="padding: 1rem;">
+                <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">😊</div>
+                <div class="quest-label">今のところない</div>
+              </button>
+            </div>
+          </div>
+        `;
+      }
+
+      renderInterviewQ2_1() {
+        return `
+          <div class="screen">
+            <h1>困り事について</h1>
+            <p class="subtitle">問2-1 / 具体的な内容</p>
+
+            <p style="color: #c0c0c0; margin: 1rem 0; font-size: 0.9rem;">
+              どのようなことが困っていますか？
+            </p>
+
+            <textarea id="q2-1-answer" class="textarea-input" placeholder="例: 睡眠が不規則で、体調管理が難しい..."></textarea>
+
+            <button class="btn-primary" data-action="q2-1-proceed">
+              ➡️ 次へ
+            </button>
+          </div>
+        `;
+      }
+
+      renderInterviewQ2_2() {
+        return `
+          <div class="screen">
+            <h1>困り事について</h1>
+            <p class="subtitle">問2-2 / 相談相手</p>
+
+            <p style="color: #c0c0c0; margin: 1.5rem 0;">
+              相談相手や手助けをしてくれる人はいますか？
+            </p>
+
+            <div style="display: grid; gap: 1rem;">
+              <button class="mood-btn" data-action="q2-2-yes" style="padding: 1rem;">
+                <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">👥</div>
+                <div class="quest-label">います</div>
+              </button>
+              <button class="mood-btn" data-action="q2-2-no" style="padding: 1rem;">
+                <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🌱</div>
+                <div class="quest-label">いない</div>
+              </button>
+            </div>
+          </div>
+        `;
+      }
+
+      renderInterviewQ2_3() {
+        return `
+          <div class="screen">
+            <h1>困り事について</h1>
+            <p class="subtitle">問2-3 / 受けたサポート</p>
+
+            <p style="color: #c0c0c0; margin: 1rem 0; font-size: 0.9rem;">
+              どのようなサポートを受けましたか？（複数選択可）
+            </p>
+
+            <div class="checkbox-group">
+              <div class="checkbox-item">
+                <input type="checkbox" value="手段的サポート">
+                <label>①物質的な支援・手伝い</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" value="情緒的サポート">
+                <label>②共感・傾聴</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" value="情報的サポート">
+                <label>③知識・アドバイス</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" value="交友的サポート">
+                <label>④一緒に過ごす</label>
+              </div>
+            </div>
+
+            <button class="btn-primary" data-action="q2-3-proceed">
+              ➡️ 次へ
+            </button>
+          </div>
+        `;
+      }
+
+      renderInterviewQ2_5() {
+        return `
+          <div class="screen">
+            <h1>困り事について</h1>
+            <p class="subtitle">問2-5 / 解決方法</p>
+
+            <p style="color: #c0c0c0; margin: 1rem 0; font-size: 0.9rem;">
+              どのように解決しましたか？
+            </p>
+
+            <textarea id="q2-5-answer" class="textarea-input" placeholder="例: 医師に相談した。友人に話を聞いてもらった..."></textarea>
+
+            <button class="btn-primary" data-action="q2-5-proceed">
+              ➡️ 次へ
+            </button>
+          </div>
+        `;
+      }
+
+      renderInterviewQ3() {
+        return `
+          <div class="screen">
+            <h1>不安・心配</h1>
+            <p class="subtitle">問3 / 今の心配なこと</p>
+
+            <p style="color: #c0c0c0; margin: 1.5rem 0;">
+              何か不安や心配に思っていることはありますか？
+            </p>
+
+            <div style="display: grid; gap: 1rem;">
+              <button class="mood-btn" data-action="q3-yes" style="padding: 1rem;">
+                <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">😰</div>
+                <div class="quest-label">あります</div>
+              </button>
+              <button class="mood-btn" data-action="q3-no" style="padding: 1rem;">
+                <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">😌</div>
+                <div class="quest-label">大丈夫</div>
+              </button>
+            </div>
+          </div>
+        `;
+      }
+
+      renderInterviewQ7_1() {
+        return `
+          <div class="screen">
+            <h1>健康管理</h1>
+            <p class="subtitle">問7-1 / 日々の管理</p>
+
+            <p style="color: #c0c0c0; margin: 1rem 0; font-size: 0.9rem;">
+              普段どのように体調や健康を管理していますか？
+            </p>
+
+            <textarea id="q7-1-answer" class="textarea-input" placeholder="例: 毎日体温を測っている。定期検診を受けている..."></textarea>
+
+            <button class="btn-primary" data-action="q7-1-proceed">
+              ➡️ GROWセッションへ
+            </button>
+          </div>
+        `;
+      }
+
+      // ============ GROWコーチング ============
+
+      renderGrowGoal() {
+        return `
+          <div class="screen">
+            <h1>修行の目標</h1>
+            <p class="subtitle">Goal / どうなりたい？</p>
+
+            <p style="color: #c0c0c0; margin: 1rem 0; font-size: 0.9rem;">
+              あなたが達成したい目標は何ですか？
+            </p>
+
+            <textarea id="grow-goal-answer" class="textarea-input" placeholder="例: 毎晩11時に寝る。毎日散歩する..."></textarea>
+
+            <button class="btn-primary" data-action="grow-goal-proceed">
+              ➡️ 次へ
+            </button>
+          </div>
+        `;
+      }
+
+      renderGrowReality() {
+        return `
+          <div class="screen">
+            <h1>現状確認</h1>
+            <p class="subtitle">Reality / 今はどう？</p>
+
+            <p style="color: #c0c0c0; margin: 1rem 0; font-size: 0.9rem;">
+              現在、どのような状況でしょうか？
+            </p>
+
+            <textarea id="grow-reality-answer" class="textarea-input" placeholder="例: 現在は1時頃に寝ている。運動していない..."></textarea>
+
+            <button class="btn-primary" data-action="grow-reality-proceed">
+              ➡️ 次へ
+            </button>
+          </div>
+        `;
+      }
+
+      renderGrowOptions() {
+        return `
+          <div class="screen">
+            <h1>解決策を考える</h1>
+            <p class="subtitle">Options / どんな方法が？</p>
+
+            <p style="color: #c0c0c0; margin: 1rem 0; font-size: 0.9rem;">
+              どんな方法が考えられますか？（複数可）
+            </p>
+
+            <textarea id="grow-options-answer" class="textarea-input" placeholder="例: スマホを見ない時間を作る。瞑想を試す..."></textarea>
+
+            <button class="btn-primary" data-action="grow-options-proceed">
+              ➡️ 次へ
+            </button>
+          </div>
+        `;
+      }
+
+      renderGrowWill() {
+        return `
+          <div class="screen">
+            <h1>実行計画</h1>
+            <p class="subtitle">Will / 何をする？</p>
+
+            <p style="color: #c0c0c0; margin: 1rem 0; font-size: 0.9rem;">
+              最初の一歩として、何をいつまでにやってみたいですか？
+            </p>
+
+            <textarea id="grow-will-answer" class="textarea-input" placeholder="例: 明日から10時半にスマホを置く..."></textarea>
+
+            <button class="btn-primary" data-action="grow-will-proceed">
+              ✅ セッション完了
+            </button>
+          </div>
+        `;
+      }
+
+      renderGrowSummary() {
+        const goal = this.stateManager.getSessionData('growGoal');
+        return `
+          <div class="screen">
+            <div class="luna-avatar level-8">✨</div>
+            <h1>修行の新たな道</h1>
+            <p class="subtitle">素晴らしい決意です</p>
+
+            <div class="luna-comment">
+              あなたの目標「${goal}」の達成に向けて、ルナも応援しています。
+              小さな一歩から始めることが、大きな力になります。
+              無理なく、続けていきましょう。
+            </div>
+
+            <button class="btn-primary" data-action="back-welcome">
+              🏠 ホームへ帰還
+            </button>
+          </div>
+        `;
+      }
+
+      attachEventListeners(state) {
+        document.querySelectorAll('[data-action]').forEach(el => {
+          el.addEventListener('click', (e) => {
+            const action = e.currentTarget.getAttribute('data-action');
+            const id = e.currentTarget.getAttribute('data-id');
+            this.handleAction(action, id);
+          });
+        });
+
+        // 非同期処理
+        if (state === STATES.WELCOME) {
+          this.loadGreeting();
+        }
+        if (state === STATES.DAILY_COMMENT) {
+          this.loadDailyComment();
+        }
+      }
+
+      async loadGreeting() {
+        try {
+          const xp = this.dataManager.getXP();
+          const streaks = this.dataManager.getStreaks();
+          const greeting = await this.geminiAPI.getGreeting(streaks.current, xp.level);
+          const elem = document.getElementById('greeting-message');
+          if (elem) elem.textContent = greeting;
+        } catch (error) {
+          console.error('Error loading greeting:', error);
+          const elem = document.getElementById('greeting-message');
+          if (elem) elem.textContent = DEFAULT_FALLBACK_COMMENTS[Math.floor(Math.random() * DEFAULT_FALLBACK_COMMENTS.length)];
+        }
+      }
+
+      async loadDailyComment() {
+        try {
+          const mood = this.stateManager.getSessionData('currentMood');
+          const exercises = this.stateManager.getSessionData('currentExercises') || [];
+          const foods = this.stateManager.getSessionData('currentFoods') || [];
+          const streaks = this.dataManager.getStreaks();
+
+          const comment = await this.geminiAPI.getCoachingComment(
+            mood,
+            exercises.length,
+            foods.length,
+            streaks.current
+          );
+          document.getElementById('luna-comment').textContent = comment;
+        } catch (error) {
+          console.error('Error loading comment:', error);
+          document.getElementById('luna-comment').textContent = DEFAULT_FALLBACK_COMMENTS[0];
+        }
+      }
+
+      handleAction(action, id) {
+        switch (action) {
+          case 'open-settings':
+            this.stateManager.setState(STATES.SETTINGS);
+            this.render(STATES.SETTINGS);
+            break;
+          case 'clear-data':
+            if (confirm('⚠️ すべてのデータを削除します。本当によろしいですか？\n（この操作は戻せません）')) {
+              Object.values(CONFIG.STORAGE_KEYS).forEach(key => {
+                localStorage.removeItem(key);
+              });
+              alert('✅ データを削除しました。ページをリロードしてください。');
+              location.reload();
+            }
+            break;
+          case 'start-daily':
+            this.stateManager.setState(STATES.DAILY_MOOD);
+            this.render(STATES.DAILY_MOOD);
+            break;
+          case 'mood-good':
+          case 'mood-normal':
+          case 'mood-hard':
+            const mood = action.split('-')[1];
+            this.stateManager.setSessionData('currentMood', mood);
+            this.stateManager.setSessionData('currentExercises', []);
+            this.stateManager.setSessionData('currentFoods', []);
+            this.stateManager.setState(STATES.DAILY_QUESTS);
+            this.render(STATES.DAILY_QUESTS);
+            break;
+          case 'toggle-exercise':
+            const exercises = this.stateManager.getSessionData('currentExercises') || [];
+            const exIndex = exercises.indexOf(id);
+            if (exIndex > -1) {
+              exercises.splice(exIndex, 1);
+            } else {
+              exercises.push(id);
+            }
+            this.stateManager.setSessionData('currentExercises', exercises);
+            this.render(STATES.DAILY_QUESTS);
+            break;
+          case 'toggle-food':
+            const foods = this.stateManager.getSessionData('currentFoods') || [];
+            const foodIndex = foods.indexOf(id);
+            if (foodIndex > -1) {
+              foods.splice(foodIndex, 1);
+            } else {
+              foods.push(id);
+            }
+            this.stateManager.setSessionData('currentFoods', foods);
+            this.render(STATES.DAILY_QUESTS);
+            break;
+          case 'record-quests':
+            const today = new Date().toISOString().split('T')[0];
+            const exs = this.stateManager.getSessionData('currentExercises') || [];
+            const fds = this.stateManager.getSessionData('currentFoods') || [];
+            const moodVal = this.stateManager.getSessionData('currentMood');
+
+            this.dataManager.saveDailyLog(today, moodVal, exs, fds, '');
+            this.stateManager.setState(STATES.DAILY_COMMENT);
+            this.render(STATES.DAILY_COMMENT);
+            break;
+          case 'finish-daily':
+            this.stateManager.setState(STATES.DAILY_DONE);
+            this.render(STATES.DAILY_DONE);
+            setTimeout(() => {
+              this.stateManager.clearSessionData();
+              this.stateManager.setState(STATES.WELCOME);
+              this.render(STATES.WELCOME);
+            }, 2000);
+            break;
+          case 'view-dashboard':
+            this.stateManager.setState(STATES.DASHBOARD);
+            this.render(STATES.DASHBOARD);
+            break;
+          case 'start-interview':
+            this.stateManager.setState(STATES.INTERVIEW_START);
+            this.render(STATES.INTERVIEW_START);
+            break;
+          case 'start-interview-flow':
+            this.stateManager.setState(STATES.INTERVIEW_Q1);
+            this.render(STATES.INTERVIEW_Q1);
+            break;
+          case 'q1-yes':
+            this.stateManager.setSessionData('q1_has_trouble', true);
+            this.stateManager.setState(STATES.INTERVIEW_Q2_1);
+            this.render(STATES.INTERVIEW_Q2_1);
+            break;
+          case 'q1-no':
+            this.stateManager.setSessionData('q1_has_trouble', false);
+            this.stateManager.setState(STATES.INTERVIEW_Q3);
+            this.render(STATES.INTERVIEW_Q3);
+            break;
+          case 'q2-1-proceed':
+            this.stateManager.setSessionData('q2_1_detail', document.getElementById('q2-1-answer').value);
+            this.stateManager.setState(STATES.INTERVIEW_Q2_2);
+            this.render(STATES.INTERVIEW_Q2_2);
+            break;
+          case 'q2-2-yes':
+            this.stateManager.setSessionData('q2_2_support', true);
+            this.stateManager.setState(STATES.INTERVIEW_Q2_3);
+            this.render(STATES.INTERVIEW_Q2_3);
+            break;
+          case 'q2-2-no':
+            this.stateManager.setSessionData('q2_2_support', false);
+            this.stateManager.setState(STATES.INTERVIEW_Q2_5);
+            this.render(STATES.INTERVIEW_Q2_5);
+            break;
+          case 'q2-3-proceed':
+            const selected = Array.from(document.querySelectorAll('.checkbox-group input[type="checkbox"]:checked'))
+              .map(cb => cb.value);
+            this.stateManager.setSessionData('q2_3_received', selected);
+            this.stateManager.setState(STATES.INTERVIEW_Q2_5);
+            this.render(STATES.INTERVIEW_Q2_5);
+            break;
+          case 'q2-5-proceed':
+            this.stateManager.setSessionData('q2_5_solution', document.getElementById('q2-5-answer').value);
+            this.stateManager.setState(STATES.INTERVIEW_Q3);
+            this.render(STATES.INTERVIEW_Q3);
+            break;
+          case 'q3-yes':
+            this.stateManager.setSessionData('q3_has_worry', true);
+            this.stateManager.setState(STATES.INTERVIEW_Q7_1);
+            this.render(STATES.INTERVIEW_Q7_1);
+            break;
+          case 'q3-no':
+            this.stateManager.setSessionData('q3_has_worry', false);
+            this.stateManager.setState(STATES.INTERVIEW_Q7_1);
+            this.render(STATES.INTERVIEW_Q7_1);
+            break;
+          case 'q7-1-proceed':
+            this.stateManager.setSessionData('q7_1_management', document.getElementById('q7-1-answer').value);
+            this.stateManager.setState(STATES.GROW_GOAL);
+            this.render(STATES.GROW_GOAL);
+            break;
+          case 'grow-goal-proceed':
+            const goal = document.getElementById('grow-goal-answer').value;
+            this.stateManager.setSessionData('growGoal', goal);
+            this.stateManager.setState(STATES.GROW_REALITY);
+            this.render(STATES.GROW_REALITY);
+            break;
+          case 'grow-reality-proceed':
+            this.stateManager.setSessionData('growReality', document.getElementById('grow-reality-answer').value);
+            this.stateManager.setState(STATES.GROW_OPTIONS);
+            this.render(STATES.GROW_OPTIONS);
+            break;
+          case 'grow-options-proceed':
+            this.stateManager.setSessionData('growOptions', document.getElementById('grow-options-answer').value);
+            this.stateManager.setState(STATES.GROW_WILL);
+            this.render(STATES.GROW_WILL);
+            break;
+          case 'grow-will-proceed':
+            const will = document.getElementById('grow-will-answer').value;
+            this.stateManager.setSessionData('growWill', will);
+            // セッション保存
+            const today = new Date().toISOString().split('T')[0];
+            const week = `${new Date().getFullYear()}-W${Math.ceil((new Date(today).getDate()) / 7)}`;
+            this.dataManager.addXP(5, 'grow_session', today);
+            this.stateManager.setState(STATES.GROW_SUMMARY);
+            this.render(STATES.GROW_SUMMARY);
+            break;
+          case 'back-welcome':
+            this.stateManager.clearSessionData();
+            this.stateManager.setState(STATES.WELCOME);
+            this.render(STATES.WELCOME);
+            break;
+        }
+      }
+    }
+
+    // ============================================
+    // INITIALIZE
+    // ============================================
+
+    const stateManager = new StateManager();
+    const dataManager = new DataManager();
+    const geminiAPI = new GeminiAPI(CONFIG.GEMINI_API_KEY);
+    const uiRenderer = new UIRenderer(stateManager, dataManager, geminiAPI);
+
+    stateManager.setState(STATES.WELCOME);
+    uiRenderer.render(STATES.WELCOME);
+  </script>
+</body>
+</html>
