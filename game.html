@@ -485,6 +485,10 @@
             <div class="home-card-icon">📊</div>
             <div class="home-card-title">今日の目標</div>
           </div>
+          <div class="home-card" onclick="gameState.openWeeklyQuestionnaire()">
+            <div class="home-card-icon">📈</div>
+            <div class="home-card-title">今週の振り返り</div>
+          </div>
           <div class="home-card" onclick="gameState.goToScene('chat')">
             <div class="home-card-icon">💬</div>
             <div class="home-card-title">ルナと話す</div>
@@ -560,6 +564,20 @@
         </div>
       </div>
     </div>
+
+    <!-- Scene: 週次インタビュー -->
+    <div class="scene" id="scene-weekly-interview">
+      <div class="container">
+        <div class="progress-bar">
+          <div class="progress-fill" id="weekly-progress-fill" style="width: 0%;"></div>
+        </div>
+        <div class="progress-text" id="weekly-progress-text">1 / 8</div>
+
+        <div id="weekly-interview-content">
+          <!-- 動的に生成される -->
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- エラーモーダル -->
@@ -590,8 +608,10 @@
   <script src="js/firebase-api.js"></script>
   <script src="js/game-state.js"></script>
   <script src="js/questionnaire.js"></script>
+  <script src="js/weekly-questionnaire.js"></script>
   <script src="js/luna-expressions.js"></script>
   <script src="js/profile-generator.js"></script>
+  <script src="js/weekly-profile-generator.js"></script>
   <script src="js/dify-api.js"></script>
   <script src="js/game-loop.js"></script>
 </body>

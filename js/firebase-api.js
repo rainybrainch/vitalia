@@ -199,6 +199,69 @@ class FirebaseAPI {
   }
 
   /**
+   * 週次チェックインデータを保存
+   * @param {Object} weeklyCheckinJson - 週次チェックインJSON
+   * @returns {Promise} 保存完了を示すPromise
+   */
+  async saveWeeklyCheckin(weeklyCheckinJson) {
+    if (!this.db) {
+      throw new Error('Firebase not initialized');
+    }
+
+    try {
+      const userRef = this.db.collection('users').doc(this.userId);
+      const weekId = weeklyCheckinJson.weekId;
+
+      const checkInData = {
+        ...weeklyCheckinJson,
+        userId: this.userId,
+        savedAt: firebase.firestore.FieldValue.serverTimestamp()
+      };
+
+      // サブコレクション: users/{userId}/weeklyCheckins/{weekId}
+      await userRef.collection('weeklyCheckins').doc(weekId).set(checkInData);
+
+      console.log('Weekly checkin saved successfully:', weekId);
+      return {
+        success: true,
+        userId: this.userId,
+        weekId: weekId,
+        timestamp: new Date().toISOString()
+      };
+    } catch (error) {
+      console.error('Error saving weekly checkin:', error);
+      throw new Error(`Failed to save weekly checkin: ${error.message}`);
+    }
+  }
+
+  /**
+   * 週次チェックインデータを読み込み
+   * @param {string} weekId - YYYY-MM-DD形式のweekId
+   * @returns {Promise<Object>} 週次チェックインデータ
+   */
+  async loadWeeklyCheckin(weekId) {
+    if (!this.db) {
+      throw new Error('Firebase not initialized');
+    }
+
+    try {
+      const userRef = this.db.collection('users').doc(this.userId);
+      const doc = await userRef.collection('weeklyCheckins').doc(weekId).get();
+
+      if (doc.exists) {
+        console.log('Weekly checkin loaded from Firestore');
+        return doc.data();
+      } else {
+        console.log('No weekly checkin found for weekId:', weekId);
+        return null;
+      }
+    } catch (error) {
+      console.error('Error loading weekly checkin:', error);
+      throw new Error(`Failed to load weekly checkin: ${error.message}`);
+    }
+  }
+
+  /**
    * エラーメッセージを標準化
    * @param {Error} error - エラーオブジェクト
    * @returns {string} ユーザーフレンドリーなエラーメッセージ

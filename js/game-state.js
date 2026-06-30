@@ -5,6 +5,7 @@ class GameState {
     this.userProfile = this.loadProfile();
     this.gameProgress = this.loadProgress();
     this.interviewData = {};
+    this.weeklyData = {};
     this.currentStep = 0;
 
     this.setupEventListeners();
@@ -43,6 +44,9 @@ class GameState {
     switch (sceneName) {
       case 'interview':
         this.initializeInterview();
+        break;
+      case 'weekly-interview':
+        this.initializeWeeklyInterview();
         break;
       case 'loading':
         this.startLoadingAnimation();
@@ -416,6 +420,221 @@ class GameState {
       this.goToScene('home');
     } else {
       this.goToScene('title');
+    }
+  }
+
+  // ===== 週次インタビュー機能 =====
+
+  /**
+   * 週次アンケートを開始
+   */
+  openWeeklyQuestionnaire() {
+    this.weeklyData = {};
+    this.currentStep = 0;
+    this.goToScene('weekly-interview');
+  }
+
+  /**
+   * 週次インタビューを初期化
+   */
+  initializeWeeklyInterview() {
+    this.currentStep = 0;
+    this.weeklyData = {};
+    this.showWeeklyQuestion();
+  }
+
+  /**
+   * 週次質問を表示（1画面1質問）
+   */
+  showWeeklyQuestion() {
+    const questions = weeklyQuestionnaire.getQuestions();
+    if (this.currentStep >= questions.length) {
+      // 週次インタビュー完了
+      this.completeWeeklyInterview();
+      return;
+    }
+
+    const question = questions[this.currentStep];
+    const content = document.getElementById('weekly-interview-content');
+
+    // プログレスバー更新
+    const progress = ((this.currentStep + 1) / questions.length) * 100;
+    document.getElementById('weekly-progress-fill').style.width = progress + '%';
+    document.getElementById('weekly-progress-text').textContent = `${this.currentStep + 1} / ${questions.length}`;
+
+    // 質問表示
+    let html = `
+      <div class="luna-head" style="background: linear-gradient(135deg, #a99bc8 0%, #8B7BA8 100%);">
+        <div class="luna-icon">📊</div>
+      </div>
+      <div class="luna-dialog">
+        <p>${question.text}</p>
+      </div>
+    `;
+
+    if (question.type === 'choice') {
+      html += '<div class="button-group">';
+      question.options.forEach((option, idx) => {
+        html += `<button class="btn btn-choice" onclick="gameState.selectWeeklyOption(${idx}, ${this.currentStep})">○ ${option}</button>`;
+      });
+      html += '</div>';
+    } else if (question.type === 'text') {
+      html += `
+        <input type="text" class="input-field" id="weekly-input" placeholder="${question.placeholder || 'ここに入力してください'}" />
+        <div class="button-group">
+          <button class="btn btn-primary" onclick="gameState.submitWeeklyAnswer()">次へ ▶</button>
+        </div>
+      `;
+    }
+
+    content.innerHTML = html;
+
+    // テキスト入力の場合、フォーカス
+    if (question.type === 'text') {
+      setTimeout(() => {
+        const input = document.getElementById('weekly-input');
+        if (input) input.focus();
+      }, 100);
+    }
+  }
+
+  /**
+   * 週次選択肢を選択
+   * @param {number} optionIndex - 選択肢のインデックス
+   * @param {number} stepIndex - ステップインデックス
+   */
+  selectWeeklyOption(optionIndex, stepIndex) {
+    const questions = weeklyQuestionnaire.getQuestions();
+    const question = questions[stepIndex];
+    const answer = question.options[optionIndex];
+
+    this.weeklyData[question.id] = answer;
+
+    // 次のステップへ
+    this.currentStep++;
+    this.showWeeklyQuestion();
+  }
+
+  /**
+   * 週次テキスト回答を送信
+   */
+  submitWeeklyAnswer() {
+    const input = document.getElementById('weekly-input');
+    const questions = weeklyQuestionnaire.getQuestions();
+    const question = questions[this.currentStep];
+
+    // オプション（required: false）の場合は空白でも可
+    if (question.required && !input.value.trim()) {
+      alert('入力してください');
+      return;
+    }
+
+    // 空白でなければ、または必須でなければ記録
+    this.weeklyData[question.id] = input.value.trim() || null;
+
+    // 次のステップへ
+    this.currentStep++;
+    this.showWeeklyQuestion();
+  }
+
+  /**
+   * 週次インタビューを完了
+   */
+  async completeWeeklyInterview() {
+    try {
+      // ① weeklyCheckinJsonを生成
+      const weeklyCheckinJson = weeklyProfileGenerator.generateWeeklyCheckin(
+        this.weeklyData,
+        this.userProfile
+      );
+
+      // ② localStorage に一時保存
+      localStorage.setItem('_pending_weekly', JSON.stringify(weeklyCheckinJson));
+
+      // ③ Firebase保存
+      await firebaseAPI.saveWeeklyCheckin(weeklyCheckinJson);
+
+      // ④ 成功時のみ削除
+      localStorage.removeItem('_pending_weekly');
+
+      // ⑤ ゲーム状態を更新（EXP加算）
+      if (weeklyCheckinJson.gameStateUpdate) {
+        if (!this.userProfile.game_state) {
+          this.userProfile.game_state = { level: 1, exp: 0 };
+        }
+        this.userProfile.game_state.exp = (this.userProfile.game_state.exp || 0) + weeklyCheckinJson.gameStateUpdate.exp;
+
+        // レベルアップチェック
+        if (this.userProfile.game_state.exp >= 100) {
+          this.userProfile.game_state.level++;
+          this.userProfile.game_state.exp = 0;
+        }
+
+        this.saveProfile(this.userProfile);
+      }
+
+      // ⑥ ホームへ戻る
+      this.goToScene('home');
+
+    } catch (error) {
+      console.error('Weekly interview completion error:', error);
+      this.showErrorMessage(
+        `${firebaseAPI.getErrorMessage(error)}`,
+        () => {
+          // 再試行コールバック
+          this.retryCompleteWeeklyInterview();
+        }
+      );
+    }
+  }
+
+  /**
+   * 週次インタビューの再試行
+   */
+  async retryCompleteWeeklyInterview() {
+    try {
+      // localStorageから復帰
+      const pendingWeekly = localStorage.getItem('_pending_weekly');
+      if (!pendingWeekly) {
+        this.showErrorMessage('保存データが見つかりません。ホームに戻ります。', null);
+        this.goToScene('home');
+        return;
+      }
+
+      const weeklyCheckinJson = JSON.parse(pendingWeekly);
+
+      // Firebase再保存
+      await firebaseAPI.saveWeeklyCheckin(weeklyCheckinJson);
+
+      // 成功時のみ削除
+      localStorage.removeItem('_pending_weekly');
+
+      // ゲーム状態を更新
+      if (weeklyCheckinJson.gameStateUpdate) {
+        if (!this.userProfile.game_state) {
+          this.userProfile.game_state = { level: 1, exp: 0 };
+        }
+        this.userProfile.game_state.exp = (this.userProfile.game_state.exp || 0) + weeklyCheckinJson.gameStateUpdate.exp;
+
+        if (this.userProfile.game_state.exp >= 100) {
+          this.userProfile.game_state.level++;
+          this.userProfile.game_state.exp = 0;
+        }
+
+        this.saveProfile(this.userProfile);
+      }
+
+      // ホームへ戻る
+      this.goToScene('home');
+
+    } catch (error) {
+      console.error('Retry error:', error);
+      this.showErrorMessage(
+        `${firebaseAPI.getErrorMessage(error)}`,
+        () => {
+          this.retryCompleteWeeklyInterview();
+        }
+      );
     }
   }
 }
