@@ -66,6 +66,9 @@ class GameState {
       case 'health':
         this.displayHealth();
         break;
+      case 'chat':
+        this.displayChatScene();
+        break;
     }
   }
 
@@ -635,6 +638,123 @@ class GameState {
           this.retryCompleteWeeklyInterview();
         }
       );
+    }
+  }
+
+  // ===== ルナAIコーチングチャット機能 =====
+
+  /**
+   * ルナAIのチャット画面を表示
+   * 初回プロフィールと最新の週次チェックインを取得し、ルナコンテキストを生成
+   * Dify経由でルナの初期返答を取得し、チャット画面に表示
+   */
+  async displayChatWithLuna() {
+    try {
+      // ローディング画面への遷移（UI更新）
+      this.goToScene('loading');
+
+      // ① 初回プロフィールを Firebase から取得
+      const profileJson = await firebaseAPI.loadProfile();
+      if (!profileJson) {
+        this.showErrorMessage('プロフィール情報が見つかりません。もう一度インタビューを開始してください。',
+          () => this.goToScene('home'));
+        return;
+      }
+
+      // ② 最新の週次チェックインを Firebase から取得（オプション）
+      let latestWeeklyCheckinJson = null;
+      try {
+        latestWeeklyCheckinJson = await firebaseAPI.getLatestWeeklyCheckin();
+      } catch (error) {
+        console.warn('Latest weekly checkin not found (first time):', error);
+        // 初回時は週次データがないため、エラーとせず続行
+      }
+
+      // ③ ルナコンテキストを生成
+      const lunaContextJson = lunaContextGenerator.generateLunaContext(profileJson, latestWeeklyCheckinJson);
+
+      // ④ ローカルメモリに保持
+      this.lunaContext = lunaContextJson;
+
+      console.log('Luna context generated:', lunaContextJson);
+
+      // ⑤ Dify に ルナコンテキストを送信して初期返答を取得
+      const userId = profileJson.id || 'anonymous';
+      const lunaResponse = await difyAPI.sendLunaInitialMessage(userId, lunaContextJson);
+
+      // ⑥ ルナの返答をメモリに保存
+      this.lunaResponse = lunaResponse;
+
+      console.log('Luna response from Dify:', lunaResponse);
+
+      // ⑦ チャットシーンへ遷移（返答を表示）
+      this.goToScene('chat');
+
+    } catch (error) {
+      console.error('Error displaying chat with Luna:', error);
+      this.showErrorMessage(
+        'ルナとの接続に失敗しました。もう一度試してください。',
+        () => {
+          // ホームに戻る
+          this.goToScene('home');
+        }
+      );
+    }
+  }
+
+  /**
+   * チャットシーンの初期化
+   * ルナの返答を画面に表示
+   */
+  displayChatScene() {
+    const container = document.getElementById('luna-response-container');
+
+    if (!this.lunaResponse) {
+      container.innerHTML = `
+        <div class="luna-dialog">
+          <p>申し訳ありません。ルナの返答が取得できませんでした。</p>
+          <p style="margin-top: 1rem;">もう一度ホームからお試しください。</p>
+        </div>
+      `;
+      return;
+    }
+
+    // ルナの返答を複数行で表示（改行を保持）
+    // 段落で分割して見やすく表示
+    const paragraphs = this.lunaResponse
+      .split('\n\n')
+      .filter(para => para.trim());
+
+    const responseHtml = paragraphs
+      .map(para => {
+        const lines = para
+          .split('\n')
+          .map(line => line.trim())
+          .filter(line => line)
+          .join('<br/>');
+        return `<p>${lines}</p>`;
+      })
+      .join('');
+
+    container.innerHTML = `
+      <div class="luna-dialog">
+        ${responseHtml}
+      </div>
+    `;
+  }
+
+  /**
+   * ルナへの返答を処理
+   * @param {string} action - 'understood' または 'more'
+   */
+  respondToLuna(action) {
+    if (action === 'understood') {
+      // 「了解」ボタン → ホームに戻る
+      this.goToScene('home');
+    } else if (action === 'more') {
+      // 「もっと話す」ボタン → 今後の多回会話実装予定
+      alert('ありがとうございます。複数回の会話機能は近日実装予定です。\nまずは本日のルナからの声かけを受け止めてくださいね。');
+      this.goToScene('home');
     }
   }
 }

@@ -489,7 +489,7 @@
             <div class="home-card-icon">📈</div>
             <div class="home-card-title">今週の振り返り</div>
           </div>
-          <div class="home-card" onclick="gameState.goToScene('chat')">
+          <div class="home-card" onclick="gameState.displayChatWithLuna()">
             <div class="home-card-icon">💬</div>
             <div class="home-card-title">ルナと話す</div>
           </div>
@@ -540,12 +540,25 @@
     <!-- Scene: チャット -->
     <div class="scene" id="scene-chat">
       <div class="container">
-        <h1>ルナとの会話</h1>
-        <p class="subtitle">ルナの完全な会話機能は Dify で実装されます</p>
-        <div class="luna-dialog" style="margin-top: 2rem;">
-          <p>この画面では、Dify との統合により、より自然な会話が可能になります。</p>
-          <p style="margin-top: 1rem;">今後実装予定です。</p>
+        <div class="luna-head">
+          <div class="luna-icon">💬</div>
         </div>
+        <h1>ルナとの会話</h1>
+
+        <!-- ルナの返答を表示 -->
+        <div id="luna-response-container" style="margin-top: 2rem;">
+          <!-- 動的に生成される -->
+        </div>
+
+        <div class="button-group" style="margin-top: 2rem;">
+          <button class="btn btn-primary" onclick="gameState.respondToLuna('understood')">
+            ✓ 了解
+          </button>
+          <button class="btn btn-secondary" onclick="gameState.respondToLuna('more')">
+            💬 もっと話す
+          </button>
+        </div>
+
         <div class="nav-buttons" style="margin-top: 2rem;">
           <button class="btn btn-back" onclick="gameState.goToScene('home')">＜ 戻る</button>
         </div>
