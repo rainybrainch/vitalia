@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ヴィタリア - ルナ</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #8B7BA8;
+      --gold: #D4AF37;
+      --dark: #2d1b4e;
+      --light: #f5f3f8;
+    }
+
+    body {
+      background: linear-gradient(135deg, #2d1b4e 0%, #1a0f2e 100%);
+      min-height: 100vh;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #2d1b4e;
+      overflow-x: hidden;
+    }
+
+    #app {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .scene {
+      display: none;
+    }
+
+    .scene.active {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(245, 243, 248, 0.98) 100%);
+      border-radius: 20px;
+      padding: 2rem;
+      max-width: 500px;
+      width: 100%;
+      box-shadow: 0 20px 60px rgba(45, 27, 78, 0.3), inset 0 1px 0 rgba(139, 123, 168, 0.1);
+    }
+
+    .luna-head {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 1.5rem;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary) 0%, #a99bc8 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      box-shadow: 0 10px 30px rgba(139, 123, 168, 0.3);
+    }
+
+    .luna-icon {
+      font-size: 2.5rem;
+    }
+
+    h1 {
+      color: var(--primary);
+      font-size: 1.75rem;
+      margin-bottom: 0.5rem;
+      text-align: center;
+      margin-top: 1rem;
+    }
+
+    .subtitle {
+      color: #888;
+      text-align: center;
+      margin-bottom: 1.5rem;
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    .button-group {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .btn {
+      padding: 1rem 1.5rem;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary) 0%, #a99bc8 100%);
+      color: white;
+      box-shadow: 0 10px 30px rgba(139, 123, 168, 0.3);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 40px rgba(139, 123, 168, 0.4);
+    }
+
+    .btn-secondary {
+      background: var(--light);
+      color: var(--primary);
+      border: 2px solid var(--primary);
+    }
+
+    .btn-secondary:hover {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-choice {
+      background: var(--light);
+      color: var(--primary);
+      border: 2px solid var(--gold);
+      text-align: left;
+      padding: 1rem;
+    }
+
+    .btn-choice:hover {
+      background: rgba(212, 175, 55, 0.1);
+      border-color: var(--primary);
+    }
+
+    .btn-choice.selected {
+      background: var(--gold);
+      color: white;
+      border-color: var(--gold);
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 1rem;
+      border: 2px solid var(--primary);
+      border-radius: 10px;
+      font-size: 1rem;
+      font-family: inherit;
+      margin-bottom: 1rem;
+      transition: border-color 0.3s ease;
+    }
+
+    .input-field:focus {
+      outline: none;
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: #e0e0e0;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary) 0%, var(--gold) 100%);
+      transition: width 0.3s ease;
+    }
+
+    .progress-text {
+      text-align: center;
+      font-size: 0.85rem;
+      color: #888;
+      margin-bottom: 1rem;
+    }
+
+    .loading-spinner {
+      display: inline-block;
+      width: 40px;
+      height: 40px;
+      border: 4px solid var(--light);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .check-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin: 0.75rem 0;
+      font-size: 0.95rem;
+      color: #2d1b4e;
+    }
+
+    .check-item.done {
+      color: var(--gold);
+      font-weight: 600;
+    }
+
+    .check-icon {
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: var(--light);
+      font-size: 0.85rem;
+    }
+
+    .check-item.done .check-icon {
+      background: var(--gold);
+      color: white;
+    }
+
+    .nav-buttons {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+      justify-content: space-between;
+    }
+
+    .btn-back {
+      flex: 1;
+      padding: 1rem;
+      background: var(--light);
+      color: var(--primary);
+      border: 2px solid var(--primary);
+    }
+
+    .btn-next {
+      flex: 1;
+      padding: 1rem;
+      background: linear-gradient(135deg, var(--primary) 0%, #a99bc8 100%);
+      color: white;
+    }
+
+    .luna-dialog {
+      background: var(--light);
+      border-left: 4px solid var(--gold);
+      padding: 1.5rem;
+      border-radius: 10px;
+      margin-bottom: 1.5rem;
+      line-height: 1.6;
+    }
+
+    .terms-content {
+      max-height: 300px;
+      overflow-y: auto;
+      background: white;
+      padding: 1.5rem;
+      border-radius: 10px;
+      margin-bottom: 1.5rem;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: #666;
+    }
+
+    .terms-content h3 {
+      color: var(--primary);
+      margin-top: 1rem;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+
+    .home-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .home-card {
+      background: linear-gradient(135deg, rgba(139, 123, 168, 0.1) 0%, rgba(212, 175, 55, 0.05) 100%);
+      border: 2px solid var(--primary);
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .home-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 30px rgba(139, 123, 168, 0.2);
+    }
+
+    .home-card-icon {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .home-card-title {
+      color: var(--primary);
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 1.5rem;
+      }
+
+      h1 {
+        font-size: 1.5rem;
+      }
+
+      .luna-head {
+        width: 60px;
+        height: 60px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <!-- Scene: タイトル -->
+    <div class="scene" id="scene-title">
+      <div class="container">
+        <div class="luna-head">
+          <div class="luna-icon">🌙</div>
+        </div>
+        <h1>ヴィタリア</h1>
+        <p class="subtitle">小児がん経験者のための<br/>パーソナルヘルスコーチング</p>
+        <div class="button-group">
+          <button class="btn btn-primary" onclick="gameState.goToScene('terms')">
+            ▶ はじめる
+          </button>
+          <button class="btn btn-secondary" onclick="gameState.loadGame()">
+            続ける
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scene: 利用規約・プライバシー -->
+    <div class="scene" id="scene-terms">
+      <div class="container">
+        <h1>ご利用にあたって</h1>
+        <p class="subtitle">以下をお読みいただき、同意してください</p>
+
+        <div class="terms-content">
+          <h3>利用規約</h3>
+          <p>本サービスは、小児がん経験者の健康管理と心理的サポートを目的としています。本サービスは医学的診断や治療を行うものではありません。医師の指示に従ってください。</p>
+
+          <h3>プライバシーポリシー</h3>
+          <p>ご入力いただいた情報は、あなたのコーチング体験をパーソナライズするために使用されます。情報はローカルに保存され、外部に送信される際は暗号化されます。</p>
+
+          <h3>データ保存</h3>
+          <p>あなたの情報はブラウザのローカルストレージに保存されます。デバイスを変更する場合は、事前に情報をエクスポートしてください。</p>
+
+          <h3>免責事項</h3>
+          <p>本サービスは医学的なアドバイスではありません。緊急時は医療機関に相談してください。</p>
+        </div>
+
+        <div class="button-group">
+          <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+            <input type="checkbox" id="agree-terms" style="width: 20px; height: 20px;">
+            <span style="color: var(--primary); font-weight: 600;">規約に同意します</span>
+          </label>
+          <button class="btn btn-primary" onclick="gameState.goToScene('prologue')" id="btn-proceed" disabled style="opacity: 0.5; cursor: not-allowed;">
+            次へ ▶
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scene: プロローグ -->
+    <div class="scene" id="scene-prologue">
+      <div class="container">
+        <div class="luna-head">
+          <div class="luna-icon">😊</div>
+        </div>
+        <div class="luna-dialog">
+          <p>こんにちは。</p>
+          <p style="margin-top: 1rem;">私はルナ。</p>
+          <p style="margin-top: 1rem;">今日からあなた専属の健康コーチになります。</p>
+          <p style="margin-top: 1rem;">あなたに合ったサポートをするため、最初に少しだけお話を聞かせてください。</p>
+        </div>
+        <div class="button-group">
+          <button class="btn btn-primary" onclick="gameState.goToScene('interview')">
+            ▶ インタビューを開始
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scene: インタビュー -->
+    <div class="scene" id="scene-interview">
+      <div class="container">
+        <div class="progress-bar">
+          <div class="progress-fill" id="progress-fill" style="width: 0%;"></div>
+        </div>
+        <div class="progress-text" id="progress-text">1 / 8</div>
+
+        <div id="interview-content">
+          <!-- 動的に生成される -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Scene: 解析中 -->
+    <div class="scene" id="scene-loading">
+      <div class="container">
+        <div class="luna-head">
+          <div class="luna-icon">🧠</div>
+        </div>
+        <h1>プロフィール解析中...</h1>
+
+        <div style="margin: 2rem 0;">
+          <div class="progress-bar">
+            <div class="progress-fill" id="loading-progress" style="width: 0%;"></div>
+          </div>
+        </div>
+
+        <div id="loading-checks">
+          <div class="check-item" id="check-1">
+            <div class="check-icon">⏳</div>
+            <span>困り事を解析</span>
+          </div>
+          <div class="check-item" id="check-2">
+            <div class="check-icon">⏳</div>
+            <span>健康行動を解析</span>
+          </div>
+          <div class="check-item" id="check-3">
+            <div class="check-icon">⏳</div>
+            <span>コーチングプランを作成</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scene: ゲーム開始 -->
+    <div class="scene" id="scene-game-start">
+      <div class="container">
+        <div class="luna-head">
+          <div class="luna-icon">🌙</div>
+        </div>
+        <div class="luna-dialog" id="game-start-message">
+          <p>ありがとう。</p>
+          <p style="margin-top: 1rem;">あなたのことを理解できました。</p>
+          <p style="margin-top: 1rem;">これからは、あなた専属のコーチとして、一緒に歩んでいきます。</p>
+          <p style="margin-top: 1rem;">よろしくお願いします😊</p>
+        </div>
+        <div class="button-group">
+          <button class="btn btn-primary" onclick="gameState.goToScene('home')">
+            ▶ ゲーム開始
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scene: ホーム画面 -->
+    <div class="scene" id="scene-home">
+      <div class="container">
+        <div class="luna-head">
+          <div class="luna-icon">😊</div>
+        </div>
+        <h1>ホーム</h1>
+        <p class="subtitle" id="home-greeting">こんにちは！</p>
+
+        <div class="home-grid">
+          <div class="home-card" onclick="gameState.goToScene('daily-check')">
+            <div class="home-card-icon">📊</div>
+            <div class="home-card-title">今日の目標</div>
+          </div>
+          <div class="home-card" onclick="gameState.goToScene('chat')">
+            <div class="home-card-icon">💬</div>
+            <div class="home-card-title">ルナと話す</div>
+          </div>
+          <div class="home-card" onclick="gameState.goToScene('health')">
+            <div class="home-card-icon">💪</div>
+            <div class="home-card-title">健康行動</div>
+          </div>
+          <div class="home-card" onclick="gameState.goToScene('profile')">
+            <div class="home-card-icon">📋</div>
+            <div class="home-card-title">プロフィール</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scene: 日次チェック -->
+    <div class="scene" id="scene-daily-check">
+      <div class="container">
+        <div class="luna-head">
+          <div class="luna-icon">😊</div>
+        </div>
+        <h1>今日の目標</h1>
+        <div class="luna-dialog" id="daily-check-question">
+          <!-- 動的に生成される -->
+        </div>
+        <div class="button-group" id="daily-check-buttons">
+          <!-- 動的に生成される -->
+        </div>
+        <div class="nav-buttons">
+          <button class="btn btn-back" onclick="gameState.goToScene('home')">＜ 戻る</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scene: プロフィール -->
+    <div class="scene" id="scene-profile">
+      <div class="container">
+        <h1>プロフィール</h1>
+        <div id="profile-display" style="margin-top: 1.5rem;">
+          <!-- 動的に生成される -->
+        </div>
+        <div class="nav-buttons" style="margin-top: 2rem;">
+          <button class="btn btn-back" onclick="gameState.goToScene('home')">＜ 戻る</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scene: チャット -->
+    <div class="scene" id="scene-chat">
+      <div class="container">
+        <h1>ルナとの会話</h1>
+        <p class="subtitle">ルナの完全な会話機能は Dify で実装されます</p>
+        <div class="luna-dialog" style="margin-top: 2rem;">
+          <p>この画面では、Dify との統合により、より自然な会話が可能になります。</p>
+          <p style="margin-top: 1rem;">今後実装予定です。</p>
+        </div>
+        <div class="nav-buttons" style="margin-top: 2rem;">
+          <button class="btn btn-back" onclick="gameState.goToScene('home')">＜ 戻る</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scene: 健康行動 -->
+    <div class="scene" id="scene-health">
+      <div class="container">
+        <h1>健康行動</h1>
+        <div id="health-display" style="margin-top: 1.5rem;">
+          <!-- 動的に生成される -->
+        </div>
+        <div class="nav-buttons" style="margin-top: 2rem;">
+          <button class="btn btn-back" onclick="gameState.goToScene('home')">＜ 戻る</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- エラーモーダル -->
+  <div id="error-modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); z-index: 9999; align-items: center; justify-content: center;">
+    <div class="container" style="max-width: 400px;">
+      <div class="luna-head">
+        <div class="luna-icon">⚠️</div>
+      </div>
+      <h1>エラーが発生しました</h1>
+      <div class="luna-dialog" style="margin: 1.5rem 0;">
+        <p id="error-message">エラーが発生しました。</p>
+      </div>
+      <div class="button-group">
+        <button class="btn btn-primary" id="error-retry-btn">
+          🔄 再試行
+        </button>
+        <button class="btn btn-secondary" onclick="document.getElementById('error-modal').style.display = 'none'; gameState.goToScene('title');">
+          ホームに戻る
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js"></script>
+
+  <script src="js/firebase-api.js"></script>
+  <script src="js/game-state.js"></script>
+  <script src="js/questionnaire.js"></script>
+  <script src="js/luna-expressions.js"></script>
+  <script src="js/profile-generator.js"></script>
+  <script src="js/dify-api.js"></script>
+  <script src="js/game-loop.js"></script>
+</body>
+</html>
