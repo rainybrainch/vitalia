@@ -1,0 +1,28 @@
+{
+  "name": "vitalia-api",
+  "version": "1.0.0",
+  "description": "Vitalia API server for local development",
+  "main": "api-server.js",
+  "type": "commonjs",
+  "scripts": {
+    "dev": "node api-server.js",
+    "start": "node api-server.js",
+    "setup": "node setup-env.js",
+    "setup:dev": "node setup-env.js && npm run dev"
+  },
+  "keywords": [
+    "vitalia",
+    "health",
+    "coaching",
+    "gemini",
+    "api"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3"
+  },
+  "devDependencies": {}
+}
